@@ -1,0 +1,14 @@
+# Development Note
+
+## React + Vite (shadcn/ui)の環境構築方法
+> https://ui.shadcn.com/docs/installation/vite
+に準ずる
+
+## PJディレクトリ名
+命名のベストプラクティス（短まとめ）
+
+UI側： frontend / web / client / ui / app
+API側： backend / server / api / services / core
+共有： shared / libs / packages / common
+インフラ： infra / deploy / deployment / ops
+ドキュメント： docs / handbook
