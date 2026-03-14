@@ -1,0 +1,84 @@
+name: TIL Commit Reminder
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # 20:00 JST
+    - cron: '0 13 * * *'  # 22:00 JST
+    - cron: '0 14 * * *'  # 23:00 JST
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine notification level
+        id: level
+        run: |
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" = "11" ]; then
+            echo "level=gentle" >> "$GITHUB_OUTPUT"
+          elif [ "$HOUR" = "13" ]; then
+            echo "level=urgent" >> "$GITHUB_OUTPUT"
+          elif [ "$HOUR" = "14" ]; then
+            echo "level=final" >> "$GITHUB_OUTPUT"
+          else
+            echo "level=gentle" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check today's commits
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 当日 00:00 JST = UTC 前日 15:00
+          SINCE=$(date -u -d "$(date -u +%Y-%m-%d) -9 hours" +%Y-%m-%dT15:00:00Z)
+          echo "Checking commits since: $SINCE"
+
+          COMMIT_COUNT=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/commits?sha=main&since=$SINCE" \
+            | jq 'length')
+
+          echo "Commit count: $COMMIT_COUNT"
+
+          if [ "$COMMIT_COUNT" -gt 0 ]; then
+            echo "has_commits=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_commits=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send Pushover notification
+        if: steps.check.outputs.has_commits == 'false'
+        env:
+          PUSHOVER_API_TOKEN: ${{ secrets.PUSHOVER_API_TOKEN }}
+          PUSHOVER_USER_KEY: ${{ secrets.PUSHOVER_USER_KEY }}
+        run: |
+          LEVEL="${{ steps.level.outputs.level }}"
+
+          if [ "$LEVEL" = "gentle" ]; then
+            TITLE="📝 TIL リマインダー"
+            MESSAGE="今日はまだ t-act/til にコミットしていません。時間があるうちに書きましょう！"
+            PRIORITY=0
+          elif [ "$LEVEL" = "urgent" ]; then
+            TITLE="⚠️ TIL 未コミット！"
+            MESSAGE="今日の t-act/til へのコミットがまだありません！今日中に記録を残しましょう！"
+            PRIORITY=1
+          else
+            TITLE="🚨 TIL 最終リマインド！"
+            MESSAGE="今日の t-act/til へのコミットがまだありません！日付が変わる前に記録を残しましょう！"
+            PRIORITY=1
+          fi
+
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            --form-string "token=$PUSHOVER_API_TOKEN" \
+            --form-string "user=$PUSHOVER_USER_KEY" \
+            --form-string "title=$TITLE" \
+            --form-string "message=$MESSAGE" \
+            --form-string "priority=$PRIORITY" \
+            https://api.pushover.net/1/messages.json)
+
+          echo "Pushover API response status: $RESPONSE"
+
+          if [ "$RESPONSE" != "200" ]; then
+            echo "::error::Pushover API returned status $RESPONSE"
+            exit 1
+          fi
