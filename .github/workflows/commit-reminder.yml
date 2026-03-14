@@ -55,15 +55,15 @@ jobs:
           LEVEL="${{ steps.level.outputs.level }}"
 
           if [ "$LEVEL" = "gentle" ]; then
-            TITLE="📝 TIL リマインダー"
+            TITLE="TIL リマインダー"
             MESSAGE="今日はまだ t-act/til にコミットしていません。時間があるうちに書きましょう！"
             PRIORITY=0
           elif [ "$LEVEL" = "urgent" ]; then
-            TITLE="⚠️ TIL 未コミット！"
+            TITLE="⚠️TIL 未コミット！"
             MESSAGE="今日の t-act/til へのコミットがまだありません！今日中に記録を残しましょう！"
             PRIORITY=1
           else
-            TITLE="🚨 TIL 最終リマインド！"
+            TITLE="TIL 最終リマインド！"
             MESSAGE="今日の t-act/til へのコミットがまだありません！日付が変わる前に記録を残しましょう！"
             PRIORITY=1
           fi
