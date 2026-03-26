@@ -17,9 +17,9 @@ jobs:
           HOUR=$(date -u +%H)
           if [ "$HOUR" = "11" ]; then
             echo "level=gentle" >> "$GITHUB_OUTPUT"
-          elif [ "$HOUR" = "13" ]; then
+          elif [ "$HOUR" = "12" ]; then
             echo "level=urgent" >> "$GITHUB_OUTPUT"
-          elif [ "$HOUR" = "14" ]; then
+          elif [ "$HOUR" = "13" ]; then
             echo "level=final" >> "$GITHUB_OUTPUT"
           else
             echo "level=gentle" >> "$GITHUB_OUTPUT"
