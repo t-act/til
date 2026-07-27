@@ -10,8 +10,6 @@ t-act/til/
   .github/workflows/commit-reminder.yml  # コミットリマインダー
   docs/
     REQUIREMENTS.md                   # コミットリマインダーの機能要件書
-  prompts/
-    til-auto.md                       # TIL 自動更新エージェント用プロンプト
 ```
 
 ## 学習ログ
@@ -35,12 +33,3 @@ GitHub Actions で毎日のコミット習慣を維持するためのリマイ�
 - 未コミット時に Pushover 経由で iPhone に通知
 - 1日3回、段階的にリマインド（20:00 / 21:00 / 22:00 JST）
 - 詳細は [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) を参照
-
-## TIL 自動更新
-
-GitHub の PushEvent から当日のコミットを収集し、TIL エントリを自動生成する定期実行エージェント用のプロンプト。
-
-- 手動記入済みの日はスキップ
-- リポジトリごとにコミットをまとめ、コミットメッセージからキーワードを抽出
-- コミットが無い日は `- No` を記録
-- 詳細は [prompts/til-auto.md](prompts/til-auto.md) を参照
