@@ -2,9 +2,11 @@ name: TIL Commit Reminder
 
 on:
   schedule:
-    - cron: '0 11 * * *'  # 20:00 JST
-    - cron: '0 12 * * *'  # 21:00 JST
-    - cron: '0 13 * * *'  # 22:00 JST
+    # 毎時 0 分は指定しない。スケジュール実行が集中して数時間遅延し、
+    # 就寝前どころか翌未明に起動してしまうため
+    - cron: '13 10 * * *'  # 19:13 JST
+    - cron: '37 11 * * *'  # 20:37 JST
+    - cron: '53 12 * * *'  # 21:53 JST
   workflow_dispatch:
 
 jobs:
@@ -14,16 +16,16 @@ jobs:
       - name: Determine notification level
         id: level
         run: |
-          HOUR=$(date -u +%H)
-          if [ "$HOUR" = "11" ]; then
-            echo "level=gentle" >> "$GITHUB_OUTPUT"
-          elif [ "$HOUR" = "12" ]; then
-            echo "level=urgent" >> "$GITHUB_OUTPUT"
-          elif [ "$HOUR" = "13" ]; then
-            echo "level=final" >> "$GITHUB_OUTPUT"
-          else
-            echo "level=gentle" >> "$GITHUB_OUTPUT"
-          fi
+          # 実行時刻ではなく予定時刻で判定する。実行時刻を見ると、
+          # スケジュールが遅延した日はどの cron とも一致せず常に gentle に落ちるため
+          case "${{ github.event.schedule }}" in
+            '13 10 * * *') LEVEL=gentle ;;
+            '37 11 * * *') LEVEL=urgent ;;
+            '53 12 * * *') LEVEL=final ;;
+            *)             LEVEL=gentle ;;
+          esac
+
+          echo "level=$LEVEL" >> "$GITHUB_OUTPUT"
 
       - name: Check today's commits
         id: check
