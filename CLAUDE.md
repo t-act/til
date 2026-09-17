@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal "Today I Learned" (TIL) repository — a daily learning journal. It contains markdown files organized by month (`YYYY-MM.md`) with daily entries recording what was studied.
+This is a personal "Today I Learned" (TIL) repository — a daily learning journal. It contains markdown files organized by month (`logs/YYYY/YYYY-MM.md`) with daily entries recording what was studied.
 
 ## Structure
 
-- `YYYY-MM.md` — Monthly learning log files (e.g., `2026-03.md`). Each entry has a date header and bullet points describing what was learned/done that day.
+- `logs/YYYY/YYYY-MM.md` — Monthly learning log files (e.g., `logs/2026/2026-03.md`). Each entry has a date header and bullet points describing what was learned/done that day.
 - `docs/` — Project documentation including `REQUIREMENTS.md` and `TODO.md` for a GitHub Actions commit reminder system.
 - `Note.txt` — Miscellaneous development notes (in Japanese).
 
 ## Conventions
 
 - Content is written in Japanese.
-- Monthly files use the format `YYYY-MM.md`.
+- Monthly files use the format `logs/YYYY/YYYY-MM.md`.
 - Date entries within files use short format (e.g., `0308` or `02-28`) followed by bullet points.
 - "No" or "No study" indicates days with no learning activity.
 - Commits follow the pattern `update: YYYY-MM-DD`.
