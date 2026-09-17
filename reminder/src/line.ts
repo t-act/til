@@ -1,5 +1,6 @@
 import { encodeBase64Bytes } from './base64'
 import type { Env } from './env'
+import { accessToken } from './token'
 
 const API_ORIGIN = 'https://api.line.me/v2/bot'
 
@@ -39,7 +40,7 @@ async function callApi(env: Env, endpoint: string, payload: unknown): Promise<vo
   const response = await fetch(`${API_ORIGIN}/message/${endpoint}`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${env.LINE_CHANNEL_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${await accessToken(env)}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
