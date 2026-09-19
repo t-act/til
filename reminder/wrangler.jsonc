@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "til-reminder",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-18",
+  "observability": { "enabled": true },
+  "triggers": {
+    // UTC 指定。20:00 / 21:00 / 22:00 JST に対応する
+    "crons": ["0 11 * * *", "0 12 * * *", "0 13 * * *"]
+  },
+  "vars": {
+    "GITHUB_REPO": "t-act/til",
+    "GITHUB_BRANCH": "main",
+    "JOURNAL_DIR": "logs",
+    "ENTRY_CUTOFF_HOUR": 6
+  }
+}

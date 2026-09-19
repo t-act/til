@@ -1,0 +1,43 @@
+name: Reminder
+
+# 学習ログのコミットではデプロイが走らないよう、reminder/ の変更だけを対象にする
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reminder/**'
+      - '.github/workflows/reminder.yml'
+  pull_request:
+    paths:
+      - 'reminder/**'
+      - '.github/workflows/reminder.yml'
+
+defaults:
+  run:
+    working-directory: reminder
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: reminder/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  deploy:
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: reminder
