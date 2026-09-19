@@ -124,9 +124,11 @@ curl -i -X POST https://til-reminder.<subdomain>.workers.dev -d '{}'
 
 ## 7. 旧通知経路（Pushover）を止める
 
-LINE 側が動くことを確認してから止める。両方が動く期間を1日ほど作り、通知と記録が一巡するのを見てから進める。
+旧ワークフローは切り替えと同時には消さない。LINE 側の安定稼働を確認してから削除する。
 
-1. `.github/workflows/commit-reminder.yml` を削除する。止めるだけなら Actions 画面の Disable workflow でもよい。
+確認できるまでは両方が動く。旧は 19:13 / 20:37 / 21:53 JST、新は 20:00 / 21:00 / 22:00 JST に起動するので、未記録の日は Pushover と LINE の両方に届く。判定基準も違い、旧は当日のコミットの有無、新は当日の見出しの有無を見る。LINE の返信で記録した日は両方とも黙る。
+
+1. `.github/workflows/commit-reminder.yml` を削除する。それまでの間に Pushover 側だけ止めたい場合は、Actions 画面の Disable workflow で止める。
 2. リポジトリの Settings > Secrets and variables > Actions から `PUSHOVER_API_TOKEN` と `PUSHOVER_USER_KEY` を削除する。
 3. Pushover 側のアプリケーション（API Token）が他で使っていなければ削除する。
 4. README.md の「コミットリマインダー」節と `docs/REQUIREMENTS.md` は Pushover 前提のままなので、LINE 版に書き換える。
