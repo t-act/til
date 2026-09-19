@@ -65,6 +65,8 @@ npx wrangler secret put LINE_USER_ID
 
 ［あなたのユーザーID］は、ビジネスIDに LINE アカウントを連携していないと表示されない。
 
+Pushover からの切り替えを含めた詳しい手順は [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md) を参照。
+
 ## 運用
 
 ```sh
